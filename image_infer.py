@@ -6,7 +6,8 @@ import onnxruntime
 
 copy_by = "https://github.com/Meituan-Dianping/vision-ui"  # 此处核心代码从vision-ui仓库copy而来
 OP_NUM_THREADS = 4
-IMAGE_INFER_MODEL_PATH = "model/ui_det_v2.onnx"
+IMAGE_INFER_MODEL_PATH_2 = "model/ui_det_v2.onnx"
+IMAGE_INFER_MODEL_PATH_1 = "model/ui_det_v1.onnx"
 
 
 def nms(boxes, scores, nms_thr):
@@ -210,7 +211,7 @@ class ImageInfer(object):
         cv2.imwrite(infer_result_path, origin_img)
 
 
-image_infer = ImageInfer(IMAGE_INFER_MODEL_PATH)
+image_infer = None
 
 
 def get_ui_infer(image, cls_thresh=0.3):
@@ -236,3 +237,22 @@ def get_ui_infer(image, cls_thresh=0.3):
                 }
             )
     return data
+
+
+def get_ui_infer_by_all_model(image, cls_thresh=0.3):
+    global image_infer
+    image_infer = ImageInfer(IMAGE_INFER_MODEL_PATH_1)
+    res_1 = get_ui_infer(image, cls_thresh)
+    image_infer = ImageInfer(IMAGE_INFER_MODEL_PATH_2)
+    res_2 = get_ui_infer(image, cls_thresh)
+    for item in res_2:
+        is_exists = False
+        for exists_item in res_1:
+            a, b, c, d = item.get("elem_det_region")
+            a1, b1, c1, d1 = exists_item.get("elem_det_region")
+            if abs(int(a) - int(a1)) < 5 and abs(int(b) - int(b1)) < 5 and abs(int(c) - int(c1)) < 5 and abs(
+                    int(d) - int(d1)) < 5:
+                is_exists = True
+        if not is_exists:
+            res_1.append(item)
+    return res_1

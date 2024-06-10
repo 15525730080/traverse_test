@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 from jinja2 import Environment
 from playwright.sync_api import sync_playwright
 
-from image_infer import get_ui_infer
+from image_infer import get_ui_infer_by_all_model
 
 __author__ = "fanbozhou"
 __email__ = "15525730080@163.com"
@@ -71,7 +71,7 @@ class TraverseTest(object):
 
     def get_image_touchability(self, image_path):
         """发送图像到服务并获取响应"""
-        return get_ui_infer(image_path)
+        return get_ui_infer_by_all_model(image_path)
 
     def open_target_web_and_capture(self):
         """打开目标网页，捕获屏幕截图并上传"""
