@@ -2,20 +2,16 @@ import base64
 import io
 import json
 import os
-import random
 import sys
 import time
 import traceback
 import webbrowser
 import concurrent.futures
-from datetime import datetime
-
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw
 from jinja2 import Environment
 from playwright.sync_api import sync_playwright
-
 from image_infer import get_ui_infer_by_all_model
 
 __author__ = "fanbozhou"
